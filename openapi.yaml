@@ -1,0 +1,193 @@
+openapi: '3.0.2'
+info:
+  title: API Sparepart
+  description: API untuk mengelola data sparepart seperti Data sparepart, Sparepart Masuk, Sparepart Keluar.
+  version: '1.0.0'
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Admin API Sparepart
+    email: foracademyirgo@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www/apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://api.sparepart.com/v1
+    description: Production Server
+  - url: https://api-staging.sparepart.com/v1
+    description: Stagging Server
+tags:
+  - name: Data Sparepart
+    description: Endpoint terkait dengan pengelolaan Data Sparepart
+paths:
+  /data_sparepart:
+    get:
+      tags:
+        - Data Sparepart
+      summary: Mendapaptkan daftar sparepart 
+      description: Mengambil semua data sparepart yang ada di DB
+      operationId: getSparepart
+      responses:
+        '200':
+          description: Data sparepart berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sparepart'
+        '500':
+          description: Kesalahan Server
+    post:
+      tags:
+        - Data Sparepart
+      summary: Menambah data sparepart baru
+      description: Menambahkan sparepart baru ke dalam daftar
+      operationId: addSparepart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SparepartInput'
+      responses:
+        '201':
+          description: Sparepart berhasil ditambahkan
+        '400':
+          description: Data Tidak valid
+  /data_sparepart/{id}:
+    get:
+      tags:
+        - Data Sparepart
+      summary: Mendapatkan detail sparepart berdasarkan ID
+      description: Mendapatkan informasi detail sparepart berdasarkan ID
+      operationId: getSparepartId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID sparepart
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detail sparepart berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sparepart'
+        '404':
+          description: sparepart tidak ditemukan
+        '500':
+          description: Kesalahan Server
+    put:
+      tags:
+        - Data Sparepart
+      summary: Memperbarui informasi sparepart
+      description: Memperbarui detail sparepart berdasarkan ID.
+      operationId: updateSparepart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID sparepart yang akan diperbarui
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nama_sparepart:
+                  type: string
+                  example: "Sparepart Baru"
+                kategori_rak:
+                  type: string
+                  format: float
+                  example: rak-A
+                satuan:
+                  type: string
+                  example: 100
+      responses:
+        '200':
+          description: Sparepart berhasil diperbarui
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Sparepart berhasil diperbarui"
+        '404':
+          description: Sparepart tidak ditemukan
+        '400':
+          description: Permintaan tidak valid    
+    delete:
+      tags: 
+        - Data Sparepart
+      summary: Mengahapus data sparepart berdasarkan ID
+      description: menghapus sparepart berdasarkan ID
+      operationId: deleteSparepart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID sparepart yang akan dihapus
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Sparepart berhasil dihapus
+        '404':
+          description: Sparepart tidak ditemukan
+        '500':
+          description: Kesalahan server
+components:
+  schemas:
+    Sparepart:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID primary sparepart
+        kode_sparepart:
+          type: string
+          description: Kode sparepart unik
+        nama_sparepart:
+          type: string
+          description: Nama sparepart 
+        kategori_rak:
+          type: string
+          description: Kategori rak sparepart
+        satuan:
+          type: string
+          description: satuan sparepart
+        stock:
+          type: integer
+          description: stock sparepart
+    SparepartInput:
+      type: object
+      properties:
+        kode_sparepart:
+          type: string
+          description: Kode Sparepart
+        nama_sparepart:
+          type: string
+          description: Nama Sparepart
+        kategori_rak:
+          type: string
+          description: Kategori setiap tiap sparepart
+        satuan:
+          type: string
+          description: satuan setiap sparepart
+        stock:
+          type: integer
+          description: satuan setiap sparepart
+      required:
+        - kode_sparepart
+        - nama_sparepart
+        - kategori_rak
+        - satuan
+        - stock
